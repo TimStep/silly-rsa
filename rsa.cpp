@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cmath>
 
 std::vector<int> empty{};
 
@@ -30,8 +31,10 @@ class big_integer { //supports natural numbers only
         }
         //void out() { vector_out((*this).digits);} //deprecated since overloaded cout
         friend big_integer operator * (big_integer num1, big_integer num2);
+        //friend big_integer operator *= (big_integer n1, big_integer n2) { return (n1*n2); }
         friend big_integer operator + (big_integer n1, big_integer n2);
         friend big_integer operator - (big_integer n1, big_integer n2);
+        int to_int(big_integer n);
 };
 
 std::ostream& operator << (std::ostream &os, const big_integer& bi) {
@@ -41,30 +44,37 @@ std::ostream& operator << (std::ostream &os, const big_integer& bi) {
     return os;
 }
 
-big_integer operator * (big_integer num1, big_integer num2) {
+/*
+int big_integer::to_int(big_integer n) {
+    int res = 0;
+    int p = 0;
+    for (int i = n.digits.size())
+}
+*/
+
+big_integer operator * (big_integer n1, big_integer n2) {
 
     big_integer res = big_integer(0);
-    res.digits.resize(num1.digits.size() + num2.digits.size());
+    res.digits.resize(n1.digits.size() + n2.digits.size());
     std::fill(res.digits.begin(), res.digits.end(), 0);
-
-    int temp;
-    //std::vector<int> buff;
-
-    for (int i = 0; i < num2.digits.size(); i++) {
-        temp = 0;
-        for (int j = 0; j < num1.digits.size(); j++) {
-            temp += num1.digits[i]*num2.digits[j];
-            //std::cout << temp << std::endl; debug
-        }
-        int count = 1;
-        while (temp>0) {
-            res.digits[res.digits.size()-count] += temp%10;
-            temp /= 10;
-            count+=1;
+    //std::cout << res << std::endl; //debug
+    for (int i = 0; i < n2.digits.size(); i++) {
+        for (int j = 0; j < n1.digits.size(); j++) {
+            res.digits[res.digits.size() - 1 - i - j] += n1.digits[n1.digits.size() - 1 - j]*n2.digits[n2.digits.size() - 1 - i];
         }
         
     }
-
+    //std::cout << res << std::endl; //debug
+    for (int k = res.digits.size() - 1; k >= 0; k--) {
+        res.digits[k-1] += (res.digits[k] / 10);
+        res.digits[k] %= 10;
+    }
+    //std::cout << res << std::endl; //debug
+    std::reverse(res.digits.begin(), res.digits.end());
+    while (res.digits[res.digits.size() - 1] == 0) {
+        res.digits.pop_back();
+    }
+    std::reverse(res.digits.begin(), res.digits.end());
     return res;
 }
 
@@ -101,23 +111,43 @@ big_integer operator - (big_integer n1, big_integer n2) { //considering n1>n2
     return (n1 + n2);
 }
 
+big_integer pow(big_integer n, int p) {
+    big_integer res = big_integer(1);
+    //std::cout << res << std::endl;
+    big_integer temp;
+    while (p > 0) {
+        temp = res * n;
+        res = temp;
+        //std::cout << res << std::endl; //debug
+        p -= 1;
+    }
+    return res;
+}
+
 int main() {
 
-   big_integer p = big_integer(3);
-   big_integer q = big_integer(7);
-   big_integer n = p*q;
-   //std::cout << n << std::endl;
-   big_integer phi = (p - big_integer(1))*(q - big_integer(1));
-   //std::cout << phi << std::endl;
-   big_integer e = big_integer(5);
-   big_integer d = big_integer(17);
+    //generate closed and opened keys and check
+    int p = 3;
+    int q = 7;
+    int n = p*q;
+    //std::cout << n << std::endl;
+    int phi = (p - 1)*(q - 1);
+    //std::cout << phi << std::endl;
+    int e = 5;
+    int d = 17;
 
-   big_integer op[2] = {e, n};
-   big_integer cl[2] = {d, n};
-   std::cout << op[0] << ' ' << cl[1] << std::endl;
-   std::cout << cl[0] << ' ' << cl[1] << std::endl;
+    int op[2] = {e, n};
+    int cl[2] = {d, n};
+    std::cout << op[0] << ' ' << cl[1] << std::endl;
+    std::cout << cl[0] << ' ' << cl[1] << std::endl;
 
-   return 0;
+    //cypher
+    big_integer P = big_integer(19);
+    //std::cout << (big_integer(123) * big_integer(56)) << std::endl;
+    big_integer cyph = pow(P, 5);
+    std::cout << cyph << std::endl;
+
+    return 0;
 }
 
 
