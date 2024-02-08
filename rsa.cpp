@@ -29,9 +29,7 @@ class big_integer { //supports natural numbers only
         big_integer() {
             digits = empty;
         }
-        //void out() { vector_out((*this).digits);} //deprecated since overloaded cout
         friend big_integer operator * (big_integer num1, big_integer num2);
-        //friend big_integer operator *= (big_integer n1, big_integer n2) { return (n1*n2); }
         friend big_integer operator + (big_integer n1, big_integer n2);
         friend big_integer operator - (big_integer n1, big_integer n2);
         int to_int(big_integer n);
@@ -44,32 +42,24 @@ std::ostream& operator << (std::ostream &os, const big_integer& bi) {
     return os;
 }
 
-/*
-int big_integer::to_int(big_integer n) {
-    int res = 0;
-    int p = 0;
-    for (int i = n.digits.size())
-}
-*/
-
 big_integer operator * (big_integer n1, big_integer n2) {
 
     big_integer res = big_integer(0);
     res.digits.resize(n1.digits.size() + n2.digits.size());
     std::fill(res.digits.begin(), res.digits.end(), 0);
-    //std::cout << res << std::endl; //debug
+    
     for (int i = 0; i < n2.digits.size(); i++) {
         for (int j = 0; j < n1.digits.size(); j++) {
             res.digits[res.digits.size() - 1 - i - j] += n1.digits[n1.digits.size() - 1 - j]*n2.digits[n2.digits.size() - 1 - i];
         }
         
     }
-    //std::cout << res << std::endl; //debug
+    
     for (int k = res.digits.size() - 1; k >= 0; k--) {
         res.digits[k-1] += (res.digits[k] / 10);
         res.digits[k] %= 10;
     }
-    //std::cout << res << std::endl; //debug
+    
     std::reverse(res.digits.begin(), res.digits.end());
     while (res.digits[res.digits.size() - 1] == 0) {
         res.digits.pop_back();
@@ -79,17 +69,6 @@ big_integer operator * (big_integer n1, big_integer n2) {
 }
 
 big_integer operator + (big_integer n1, big_integer n2) {
-
-    /*
-    if (n2.digits.size() >= n1.digits.size()) {
-        big_integer res = n2;
-    }
-    else {
-        big_integer res = n1;
-        n1 = n2;
-        n2 = res;
-    }
-    */
 
     while (n1.digits.size() < n2.digits.size()) { n1.digits.insert(n1.digits.begin(), 0); }
     while (n2.digits.size() < n1.digits.size()) { n2.digits.insert(n2.digits.begin(), 0); }
@@ -125,14 +104,12 @@ big_integer pow(big_integer n, int p) {
 }
 
 int main() {
-
+    
     //generate closed and opened keys and check
     int p = 3;
     int q = 7;
     int n = p*q;
-    //std::cout << n << std::endl;
     int phi = (p - 1)*(q - 1);
-    //std::cout << phi << std::endl;
     int e = 5;
     int d = 17;
 
@@ -143,7 +120,6 @@ int main() {
 
     //cypher
     big_integer P = big_integer(19);
-    //std::cout << (big_integer(123) * big_integer(56)) << std::endl;
     big_integer cyph = pow(P, 5);
     std::cout << cyph << std::endl;
 
